@@ -41,6 +41,13 @@ $widget.setTimeline({
             views: [
                 poster_view,
                 {
+                    type: "color",
+                    props: {
+                        color: "black",
+                        opacity: 0.2
+                    }
+                },
+                {
                     type: "vstack",
                     props: {
                         alignment: $widget.horizontalAlignment.leading,
