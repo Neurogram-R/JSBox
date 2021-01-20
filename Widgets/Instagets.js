@@ -19,7 +19,7 @@ const random_post_max = 1 // max range, 1 for lastest post
 const random_children_post = true // true or false
 
 const edge_type_label = {
-    "en": ["posts", "followers", "following"],
+    "en": ["Posts", "Followers", "Following"],
     "cn": ["帖子", "粉丝", "关注"]
 }
 
