@@ -2,7 +2,7 @@
 
 Instagets by Neurogram
 
- - Fill Instagram web login cookie in line 14 of the script
+ - Fill Instagram web login cookie in line 13 of the script
  - Fill Instagram username in Input Value of widget.
  - Tap image to open post
  - Tap profile to open user profile (medium widget only)
