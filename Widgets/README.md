@@ -1,11 +1,11 @@
 # JSBox Widgets
 
 Widget|Small|Medium|Large
-------------|-------------|------------|-------------
-Contrigets|✅|✅|
-Dougets||✅|
-Instagets|✅|✅|✅
-Telegets|✅|✅|
+:-:|:-:|:-:|:-:
+[Contrigets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#contrigets---github-contributions-widgets)|✅|✅|
+[Dougets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#dougets---douban-movie-widgets)||✅|
+[Instagets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#instagets---instagram-widgets)|✅|✅|✅
+[Telegets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#telegets---telegram-channel-widgets)|✅|✅|
 
 ![Contrigets](https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Material/Contrigets.png)
 
