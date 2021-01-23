@@ -1,14 +1,14 @@
 # JSBox Widgets
 
-Widget|Small|Medium|Large
-:-:|:-:|:-:|:-:
-[Contrigets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#contrigets---github-contributions-widgets)|✅|✅|
-[Dougets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#dougets---douban-movie-widgets)||✅|
-[Instagets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#instagets---instagram-widgets)|✅|✅|✅
-[Telegets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#telegets---telegram-channel-widgets)|✅|✅|
+Widget|Small|Medium|Large|Install
+:-:|:-:|:-:|:-:|:-:
+[Contrigets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#contrigets---github-contributions-widgets)|✅|✅||[🔗](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Contrigets.js&name=Contrigets&author=Neurogram&icon=icon_177.png&version=1.0.0)
+[Dougets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#dougets---douban-movie-widgets)||✅||[🔗](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Dougets.js&name=Dougets&author=Neurogram&icon=icon_192.png&version=1.0.0)
+[Instagets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#instagets---instagram-widgets)|✅|✅|✅|[🔗](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Instagets.js&name=Instagets&author=Neurogram&icon=icon_079.png&version=1.1.0)
+[Telegets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#telegets---telegram-channel-widgets)|✅|✅||[🔗](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Telegets.js&name=Telegets&author=Neurogram&icon=icon_172.png&version=1.0.0)
 
 
-### Contrigets - GitHub contributions widgets
+### [Contrigets - GitHub contributions widgets](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Contrigets.js&name=Contrigets&author=Neurogram&icon=icon_177.png&version=1.0.0)
 - Fill GitHub username and theme color in Input Value of widget. (separated by commas)
 - Support theme color: green, blue
 - Tap to open user GitHub page
@@ -16,14 +16,14 @@ Widget|Small|Medium|Large
 ![Contrigets](https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Material/Contrigets.png)
 
 
-### Dougets - Douban movie widgets
+### [Dougets - Douban movie widgets](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Dougets.js&name=Dougets&author=Neurogram&icon=icon_192.png&version=1.0.0)
 - medium widget only
 - Tap image to open movie web page of Douban
 
 ![Dougets](https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Material/Dougets.png)
 
 
-### Instagets - Instagram widgets
+### [Instagets - Instagram widgets](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Instagets.js&name=Instagets&author=Neurogram&icon=icon_079.png&version=1.1.0)
 - Fill Instagram web login cookie in line 16 of the script
 - Fill Instagram username in Input Value of widget.
 - Tap image to open post
@@ -35,7 +35,7 @@ Widget|Small|Medium|Large
 ![Instagets](https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Material/Instagets.jpg)
 
 
-### Telegets - Telegram channel widgets
+### [Telegets - Telegram channel widgets](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Telegets.js&name=Telegets&author=Neurogram&icon=icon_172.png&version=1.0.0)
 - Fill Telegram channel link path in Input Value of widget.
 - Tap to open Channel
 
