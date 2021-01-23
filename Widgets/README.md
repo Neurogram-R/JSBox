@@ -7,7 +7,7 @@ Dougets||✅|
 Instagets|✅|✅|✅
 Telegets|✅|✅|
 
-![Contrigets](/Material/Contrigets.png)
+![Contrigets](https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Material/Contrigets.png)
 
 ### Contrigets - GitHub contributions widgets
 - Fill GitHub username and theme color in Input Value of widget. (separated by commas)
