@@ -15,7 +15,7 @@ Instagets by Neurogram
 const inputValue = $widget.inputValue;
 const cookie = `LOGIN_COOKIE`
 const language = "en" // en or cn
-const random_post_max = 1 // max range, 1 for lastest post
+let random_post_max = 1 // max range, 1 for lastest post
 const random_children_post = true // true or false
 
 const edge_type_label = {
