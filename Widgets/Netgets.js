@@ -3,7 +3,7 @@
 Netgets by Neurogram
 
  - medium widget only
- - Fill Netflix country name in Input Value of widget.(default USA)
+ - Fill Netflix country name in Input Value of widget (default USA)
  - Support countries list in line 16 of the script
  - Tap image to open movie web page of Netflix
 
