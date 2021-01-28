@@ -74,7 +74,7 @@ for (var i in resp_data) {
         }
     }
 
-    movie_data.push([title[1], poster, type.replace(/card card--md layout-2\s/, ""), html_decode(description.replace(/truncate">/, "")), link])
+    movie_data.push([title[1], poster, type.replace(/card card--md layout-2\s/, "").toUpperCase(), html_decode(description.replace(/truncate">/, "")), link])
 }
 movie_data = movie_data[Random(0, movie_data.length - 1)]
 
