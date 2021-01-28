@@ -2,7 +2,7 @@
 
 Dougets by Neurogram
 
- - medium widget only
+ - Medium widget only
  - Tap image to open movie web page of Douban
 
 */
