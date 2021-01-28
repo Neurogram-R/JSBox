@@ -18,7 +18,7 @@ Widget|Small|Medium|Large|Install
 
 
 ### [Dougets - Douban movie widgets](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Dougets.js&name=Dougets&author=Neurogram&icon=icon_192.png&version=1.0.0)
-- medium widget only
+- Medium widget only
 - Tap image to open movie web page of Douban
 
 ![Dougets](https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Material/Dougets.png)
@@ -37,7 +37,7 @@ Widget|Small|Medium|Large|Install
 
 
 ### [Netgets - Netflix widgets](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Netgets.js&name=Netgets&author=Neurogram&icon=icon_114.png&version=1.0.0)
-- medium widget only
+- Medium widget only
 - Fill Netflix country name in Input Value of widget (default USA)
 - Support countries list in line 16 of the script
 - Tap image to open movie web page of Netflix
