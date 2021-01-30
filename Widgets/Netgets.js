@@ -60,10 +60,10 @@ let resp_data = resp.data.match(/<div class="card card--md layout-2 (movie|seaso
 
 let movie_data = []
 for (var i in resp_data) {
-    let title = resp_data[i].match(/card__title.+title="([^"]+)/)
+    let title = resp_data[i].match(/card__title.+title="([^"]+)/)[1]
     let poster = resp_data[i].match(/http.+\.(jpg|png)/)[0]
-    let type = resp_data[i].match(/card card--md layout-2\s[^"]+/)[0]
-    let description = resp_data[i].match(/truncate">.+/)[0]
+    let type = resp_data[i].match(/card card--md layout-2\s([^"]+)/)[1]
+    let description = resp_data[i].match(/truncate">(.+)/)[1]
     let link = resp_data[i].match(/https:\/\/netflix.com[^"]+/)[0]
 
     let entities = description.match(/&#\d{2,3};/g)
@@ -74,7 +74,7 @@ for (var i in resp_data) {
         }
     }
 
-    movie_data.push([title[1], poster, type.replace(/card card--md layout-2\s/, "").toUpperCase(), html_decode(description.replace(/truncate">/, "")), link])
+    movie_data.push([html_decode(title), poster, type.toUpperCase(), html_decode(description), link])
 }
 movie_data = movie_data[Random(0, movie_data.length - 1)]
 
