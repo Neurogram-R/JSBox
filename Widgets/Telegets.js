@@ -2,7 +2,7 @@
 
 Telegets by Neurogram
 
- - Fill Telegram channel link path in Input Value of widget.
+ - Fill Telegram channel link path in Input Value of widget (separated by commas)
  - Tap to open Channel
 
 */
@@ -10,7 +10,9 @@ Telegets by Neurogram
 const inputValue = $widget.inputValue;
 
 if (inputValue) {
-    let resp = await $http.get("https://t.me/s/" + inputValue)
+    let usernames = inputValue.split(",")
+    let username = usernames[Random(0, usernames.length - 1)]
+    let resp = await $http.get("https://t.me/s/" + username)
     let data = resp.data.match(/tgme_channel_info_header">(.|\n)+tgme_channel_download_telegram"/)[0]
     let logo = data.match(/https.+jpg/)[0]
     let title = data.match(/header_title"><span dir="auto">(.+)<\/span>/)[1]
@@ -85,7 +87,7 @@ if (inputValue) {
             const path_view = {
                 type: "text",
                 props: {
-                    text: "@" + inputValue,
+                    text: "@" + username,
                     font: $font(10),
                     color: $color("#2481cc"),
                     minimumScaleFactor: 0.5,
@@ -190,7 +192,7 @@ if (inputValue) {
                         height: height
                     },
                     spacing: 0,
-                    widgetURL: "tg://resolve?domain=" + inputValue
+                    widgetURL: "tg://resolve?domain=" + username
                 },
                 views: current_view
             }
@@ -216,4 +218,8 @@ function entityToString(entity) {
     let tmp = entities.map(item => String.fromCharCode(
         item[2] === 'x' ? parseInt(item.slice(3), 16) : parseInt(item.slice(2)))).join('')
     return tmp
+}
+
+function Random(min, max) {
+    return Math.round(Math.random() * (max - min)) + min;
 }
