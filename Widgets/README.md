@@ -10,7 +10,7 @@ Widget|Small|Medium|Large|Install
 
 
 ### [Contrigets - GitHub contributions widgets](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Contrigets.js&name=Contrigets&author=Neurogram&icon=icon_177.png&version=1.0.0)
-- Fill GitHub username and theme color in Input Value of widget. (separated by commas)
+- Fill GitHub username and theme color in Input Value of widget (separated by commas)
 - Support theme color: green, blue
 - Tap to open user GitHub page
 
@@ -26,7 +26,7 @@ Widget|Small|Medium|Large|Install
 
 ### [Instagets - Instagram widgets](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Instagets.js&name=Instagets&author=Neurogram&icon=icon_079.png&version=1.1.0)
 - Fill Instagram web login cookie in line 16 of the script
-- Fill Instagram username in Input Value of widget.
+- Fill Instagram usernames in Input Value of widget (separated by commas)
 - Tap image to open post
 - Tap profile to open user profile (medium widget only)
 - Set language in line 17 of the script
@@ -46,7 +46,7 @@ Widget|Small|Medium|Large|Install
 
 
 ### [Telegets - Telegram channel widgets](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Telegets.js&name=Telegets&author=Neurogram&icon=icon_172.png&version=1.0.0)
-- Fill Telegram channel link path in Input Value of widget.
+- Fill Telegram channel link path in Input Value of widget (separated by commas)
 - Tap to open Channel
 
 ![Telegets](https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Material/Telegets.png)
