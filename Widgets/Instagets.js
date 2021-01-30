@@ -3,7 +3,7 @@
 Instagets by Neurogram
 
  - Fill Instagram web login cookie in line 16 of the script
- - Fill Instagram username in Input Value of widget.
+ - Fill Instagram usernames in Input Value of widget (separated by commas)
  - Tap image to open post
  - Tap profile to open user profile (medium widget only)
  - Set language in line 17 of the script
@@ -24,7 +24,8 @@ const edge_type_label = {
 }
 
 if (inputValue) {
-    let instagram_url = "https://www.instagram.com/" + inputValue
+    let usernames = inputValue.split(",")
+    let instagram_url = "https://www.instagram.com/" + usernames[Random(0, usernames.length - 1)]
     let resp = await $http.get({
         url: instagram_url,
         header: {
