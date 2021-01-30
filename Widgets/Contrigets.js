@@ -2,7 +2,7 @@
 
 Contrigets by Neurogram
 
- - Fill GitHub username and theme color in Input Value of widget. (separated by commas)
+ - Fill GitHub username and theme color in Input Value of widget (separated by commas)
  - Support theme color: green, blue
  - Tap to open user GitHub page
 
