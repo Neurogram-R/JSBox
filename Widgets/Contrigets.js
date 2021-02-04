@@ -36,8 +36,11 @@ if (inputValue) {
             let colors_data = contributions.match(/data-level="\d+/g).join("\n")
             colors_data = colors_data.replace(/data-level="/g, "").split("\n")
 
+            let colors_row_spacing = family == 0 ? 2 : 2 // row spacing (small widget : medium widget)
+            let colors_column_spacing = family == 0 ? 4 : 5.05 // column spacing (small widget : medium widget)
+
             let colors_view = []
-            let colors_square_width = family == 0 ? (width - 30 - 8 * 2.5) / 9 : (width - 30 - 19 * 2.5) / 20
+            let colors_square_width = family == 0 ? (width - 30 - 8 * colors_row_spacing) / 9 : (width - 30 - 19 * colors_row_spacing) / 20
 
             for (var i = 0; i < colors_data.length; i++) {
                 colors_view.push({
@@ -120,9 +123,9 @@ if (inputValue) {
                                     minimum: 10,
                                     maximum: Infinity
                                 },
-                                spacing: 4
+                                spacing: colors_column_spacing
                             }),
-                            spacing: 2.5
+                            spacing: colors_row_spacing
                         },
                         views: colors_view
                     }
