@@ -20,8 +20,7 @@ if (inputValue) {
     let url = "https://github.com/" + username
     let resp = await $http.get(url)
 
-    let avatar = resp.data.match(/og:image" content="[^"]+/)
-    avatar = avatar[0].replace(/og:image" content="/g, "")
+    let avatar = resp.data.match(/og:image" content="([^"]+)/)[1]
     let title = resp.data.match(/<title>.+\((.+)\).*<\/title>/)[1]
     let counter = resp.data.match(/\d{1,},*\d* contributions/)[0]
 
@@ -34,9 +33,8 @@ if (inputValue) {
 
             let contributions = resp.data.match(/<g transform="translate(.|\n)+?<\/g>/g)
             contributions = family == 0 ? contributions.slice(-9).join("\n") : contributions.slice(-20).join("\n")
-            let colors_data = contributions.match(/color-calendar-graph-day.+?bg/g).join("\n")
-            colors_data = colors_data.replace(/color-calendar-graph-day-bg/g, "0").replace(/color-calendar-graph-day-L(\d)-bg/g, "$1")
-            colors_data = colors_data.split("\n")
+            let colors_data = contributions.match(/data-level="\d+/g).join("\n")
+            colors_data = colors_data.replace(/data-level="/g, "").split("\n")
 
             let colors_view = []
             let colors_square_width = family == 0 ? (width - 30 - 8 * 2.5) / 9 : (width - 30 - 19 * 2.5) / 20
