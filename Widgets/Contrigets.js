@@ -22,7 +22,6 @@ if (inputValue) {
 
     let avatar = resp.data.match(/og:image" content="([^"]+)/)[1]
     let title = resp.data.match(/<title>.+\((.+)\).*<\/title>/)[1]
-    let counter = resp.data.match(/\d{1,},*\d* contributions/)[0]
 
     $widget.setTimeline({
         render: ctx => {
@@ -32,6 +31,10 @@ if (inputValue) {
             const height = $widget.displaySize.height
 
             let contributions = resp.data.match(/<g transform="translate(.|\n)+?<\/g>/g)
+
+            let counter = contributions.join("\n").match(/data-count="\d+/g).join("\n")
+            counter = counter.replace(/data-count="/g, "").split("\n")
+
             contributions = family == 0 ? contributions.slice(-9).join("\n") : contributions.slice(-20).join("\n")
             let colors_data = contributions.match(/data-level="\d+/g).join("\n")
             colors_data = colors_data.replace(/data-level="/g, "").split("\n")
@@ -60,7 +63,7 @@ if (inputValue) {
             let counter_view = {
                 type: "text",
                 props: {
-                    text: `(${counter.toUpperCase()})`,
+                    text: `(${counter_sum(counter)} CONTRIBUTIONS)`,
                     font: $font(10),
                     color: $color("#9A9AA1"),
                     minimumScaleFactor: 0.5,
@@ -133,4 +136,12 @@ if (inputValue) {
             }
         }
     })
+}
+
+function counter_sum(arr) {
+    let total = 0
+    for (var i = 0; i < arr.length; i++) {
+        total += parseFloat(arr[i])
+    }
+    return total
 }
