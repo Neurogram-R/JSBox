@@ -2,18 +2,21 @@
 
 Instagets by Neurogram
 
- - Fill Instagram web login cookie in line 16 of the script
+ - Fill Instagram web login header in line 16 of the script
  - Fill Instagram usernames in Input Value of widget (separated by commas)
  - Tap image to open post
  - Tap profile to open user profile (medium widget only)
- - Set language in line 17 of the script
- - Set random post in line 18 of the script
- - Set random children post in line 19 of the script
+ - Set language in line 20 of the script
+ - Set random post in line 21 of the script
+ - Set random children post in line 21 of the script
 
 */
 
 const inputValue = $widget.inputValue;
-const cookie = `LOGIN_COOKIE`
+const header = {
+    "Cookie": ``,
+    "X-IG-App-ID": ""
+}
 const language = "en" // en or cn
 let random_post_max = 1 // max range, 1 for lastest post
 const random_children_post = true // true or false
@@ -25,16 +28,12 @@ const edge_type_label = {
 
 if (inputValue) {
     let usernames = inputValue.split(",")
-    let instagram_url = "https://www.instagram.com/" + usernames[Random(0, usernames.length - 1)]
+    let instagram_url = "https://i.instagram.com/api/v1/users/web_profile_info/?username=" + usernames[Random(0, usernames.length - 1)]
     let resp = await $http.get({
         url: instagram_url,
-        header: {
-            "Cookie": cookie
-        }
+        header: header
     })
-    let share_data = resp.data.match(/window._sharedData = .+?<\/script>/)
-    share_data = share_data[0].replace(/window._sharedData = |;<\/script>/g, "")
-    share_data = JSON.parse(share_data).entry_data.ProfilePage[0].graphql.user
+    let share_data = resp.data.data.user
 
     let counters = [numFormatter(share_data.edge_owner_to_timeline_media.count, 1), numFormatter(share_data.edge_followed_by.count, 1), numFormatter(share_data.edge_follow.count, 1)]
     let type = edge_type_label[language]
