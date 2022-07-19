@@ -64,8 +64,8 @@ if (inputValue) {
                 props: {
                     uri: logo,
                     frame: {
-                        width: 60,
-                        height: 60
+                        width: family == 6 ? height - 8 : 60,
+                        height: family == 6 ? height - 8 : 60
                     },
                     resizable: true,
                     cornerRadius: 15
@@ -95,13 +95,15 @@ if (inputValue) {
                 }
             }
 
-            const small_widget = [
+            const screen_small_widget = [counter_view[0]]
+
+            const screen_medium_widget = [
                 {
                     type: "hstack",
                     props: {
                         alignment: $widget.verticalAlignment.center,
                         frame: {
-                            width: width - 30,
+                            width: family == 6 ? width - 20 : width - 30,
                             height: 60
                         },
                         spacing: 0
@@ -124,7 +126,11 @@ if (inputValue) {
                             ]
                         }
                     ]
-                },
+                }
+            ]
+
+            const small_widget = [
+                screen_medium_widget[0],
                 spacerMaker(18, width - 30),
                 title_view,
                 spacerMaker(3, width - 30),
@@ -181,14 +187,17 @@ if (inputValue) {
                 }
             ]
 
-            let current_view = family == 0 ? small_widget : medium_widget
+            let current_view = small_widget
+            if (family == 1) current_view = medium_widget
+            if (family == 5 || family == 7) current_view = screen_small_widget
+            if (family == 6) current_view = screen_medium_widget
 
             return {
                 type: "vstack",
                 props: {
                     alignment: $widget.horizontalAlignment.leading,
                     frame: {
-                        width: width - 30,
+                        width: family == 5 || family == 7 ? width : family == 6 ? width - 20 : width - 30,
                         height: height
                     },
                     spacing: 0,
