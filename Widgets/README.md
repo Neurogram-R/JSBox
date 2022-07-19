@@ -1,12 +1,12 @@
 # JSBox Widgets
 
-Widget|Small|Medium|Large|Install
-:-:|:-:|:-:|:-:|:-:
-[Contrigets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#contrigets---github-contributions-widgets)|✅|✅||[🔗](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Contrigets.js&name=Contrigets&author=Neurogram&icon=icon_177.png&version=1.0.0)
-[Dougets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#dougets---douban-movie-widgets)||✅||[🔗](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Dougets.js&name=Dougets&author=Neurogram&icon=icon_192.png&version=1.0.0)
-[Instagets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#instagets---instagram-widgets)|✅|✅|✅|[🔗](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Instagets.js&name=Instagets&author=Neurogram&icon=icon_079.png&version=1.1.0)
-[Netgets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#netgets---netflix-widgets)||✅||[🔗](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Netgets.js&name=Netgets&author=Neurogram&icon=icon_114.png&version=1.0.0)
-[Telegets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#telegets---telegram-channel-widgets)|✅|✅||[🔗](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Telegets.js&name=Telegets&author=Neurogram&icon=icon_172.png&version=1.0.0)
+Widget|Small|Medium|Large|Circular|Rectangular|Inline|Install
+:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:
+[Contrigets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#contrigets---github-contributions-widgets)|✅|✅|||||[🔗](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Contrigets.js&name=Contrigets&author=Neurogram&icon=icon_177.png&version=1.0.0)
+[Dougets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#dougets---douban-movie-widgets)||✅|||||[🔗](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Dougets.js&name=Dougets&author=Neurogram&icon=icon_192.png&version=1.0.0)
+[Instagets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#instagets---instagram-widgets)|✅|✅|✅||||[🔗](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Instagets.js&name=Instagets&author=Neurogram&icon=icon_079.png&version=1.1.0)
+[Netgets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#netgets---netflix-widgets)||✅|||||[🔗](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Netgets.js&name=Netgets&author=Neurogram&icon=icon_114.png&version=1.0.0)
+[Telegets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#telegets---telegram-channel-widgets)|✅|✅||✅|✅|✅|[🔗](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Telegets.js&name=Telegets&author=Neurogram&icon=icon_172.png&version=1.0.0)
 
 
 ### [Contrigets - GitHub contributions widgets](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Contrigets.js&name=Contrigets&author=Neurogram&icon=icon_177.png&version=1.0.0)
