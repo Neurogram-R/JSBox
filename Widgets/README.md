@@ -49,4 +49,4 @@ Widget|Small|Medium|Large|Install
 - Fill Telegram channel link path in Input Value of widget (separated by commas)
 - Tap to open Channel
 
-![Telegets](https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Material/Telegets.png)
+![Telegets](https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Material/Telegets.jpg)
