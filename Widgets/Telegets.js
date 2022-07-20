@@ -95,9 +95,9 @@ if (inputValue) {
                 }
             }
 
-            const screen_small_widget = [counter_view[0]]
+            const inline_widget = [counter_view[0]]
 
-            const screen_medium_widget = [
+            const rectangular_widget = [
                 {
                     type: "hstack",
                     props: {
@@ -130,7 +130,7 @@ if (inputValue) {
             ]
 
             const small_widget = [
-                screen_medium_widget[0],
+                rectangular_widget[0],
                 spacerMaker(18, width - 30),
                 title_view,
                 spacerMaker(3, width - 30),
@@ -189,8 +189,8 @@ if (inputValue) {
 
             let current_view = small_widget
             if (family == 1) current_view = medium_widget
-            if (family == 5 || family == 7) current_view = screen_small_widget
-            if (family == 6) current_view = screen_medium_widget
+            if (family == 5 || family == 7) current_view = inline_widget
+            if (family == 6) current_view = rectangular_widget
 
             return {
                 type: "vstack",
