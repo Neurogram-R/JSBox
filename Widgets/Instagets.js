@@ -8,7 +8,7 @@ Instagets by Neurogram
  - Tap profile to open user profile (medium widget only)
  - Set language in line 20 of the script
  - Set random post in line 21 of the script
- - Set random children post in line 21 of the script
+ - Set random children post in line 22 of the script
 
 */
 
@@ -73,9 +73,7 @@ if (inputValue) {
             const height = $widget.displaySize.height
             let share_total = share_data.edge_owner_to_timeline_media.edges
 
-            if (random_post_max > share_total.length) {
-                random_post_max = share_total.length
-            }
+            if (random_post_max > share_total.length) random_post_max = share_total.length
 
             let current_share = share_total[Random(0, random_post_max - 1)].node
             let display_url = current_share.display_url
@@ -128,6 +126,61 @@ if (inputValue) {
                 ]
             }
 
+            let inline_widget = {
+                type: "text",
+                props: {
+                    text: family < 5 ? share_data.full_name : counters[1],
+                    font: $font("bold", 20),
+                    light: "#282828",
+                    dark: "white",
+                    minimumScaleFactor: 0.5,
+                    lineLimit: 1
+                }
+            }
+
+            let rectangular_widget = {
+                type: "hstack",
+                props: {
+                    alignment: $widget.verticalAlignment.center
+                },
+                views: [
+                    {
+                        type: "image",
+                        props: {
+                            uri: share_data.profile_pic_url_hd,
+                            frame: {
+                                width: family < 5 ? 35 : height - 8,
+                                height: family < 5 ? 35 : height - 8
+                            },
+                            cornerRadius: {
+                                value: family < 5 ? 17.5 : (height - 8) / 2,
+                                style: 0
+                            },
+                            resizable: true
+                        }
+                    },
+                    {
+                        type: "vstack",
+                        props: {
+                            alignment: $widget.horizontalAlignment.leading
+                        },
+                        views: [
+                            inline_widget,
+                            {
+                                type: "text",
+                                props: {
+                                    text: family < 5 ? "@" + share_data.username : type[1],
+                                    font: $font(10),
+                                    color: $color("#2481cc"),
+                                    minimumScaleFactor: 0.5,
+                                    lineLimit: 1
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+
             let medium_widget = {
                 type: "hstack",
                 props: {
@@ -145,61 +198,10 @@ if (inputValue) {
                                 width: width - height - 15,
                                 height: height
                             },
-                            link: instagram_url
+                            link: "https://www.instagram.com/" + instagram_url.match(/username=(.+)/)[1]
                         },
                         views: [
-                            {
-                                type: "hstack",
-                                props: {
-                                    alignment: $widget.verticalAlignment.center
-                                },
-                                views: [
-                                    {
-                                        type: "image",
-                                        props: {
-                                            uri: share_data.profile_pic_url_hd,
-                                            frame: {
-                                                width: 35,
-                                                height: 35
-                                            },
-                                            cornerRadius: {
-                                                value: 17.5,
-                                                style: 0
-                                            },
-                                            resizable: true
-                                        }
-                                    },
-                                    {
-                                        type: "vstack",
-                                        props: {
-                                            alignment: $widget.horizontalAlignment.leading
-                                        },
-                                        views: [
-                                            {
-                                                type: "text",
-                                                props: {
-                                                    text: share_data.full_name,
-                                                    font: $font("bold", 20),
-                                                    light: "#282828",
-                                                    dark: "white",
-                                                    minimumScaleFactor: 0.5,
-                                                    lineLimit: 1
-                                                }
-                                            },
-                                            {
-                                                type: "text",
-                                                props: {
-                                                    text: "@" + share_data.username,
-                                                    font: $font(10),
-                                                    color: $color("#2481cc"),
-                                                    minimumScaleFactor: 0.5,
-                                                    lineLimit: 1
-                                                }
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
+                            rectangular_widget,
                             {
                                 type: "text",
                                 props: {
@@ -228,7 +230,11 @@ if (inputValue) {
                     spacerMaker(height, 0)
                 ]
             }
-            return family == 1 ? medium_widget : small_widget
+
+            if (family == 0 || family == 2) return small_widget
+            if (family == 1) return medium_widget
+            if (family == 5 || family == 7) return inline_widget
+            if (family == 6) return rectangular_widget
         }
     })
 }
