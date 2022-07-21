@@ -2,7 +2,7 @@
 
 Widget|Small|Medium|Large|Circular|Rectangular|Inline|Install
 :-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:
-[Contrigets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#contrigets---github-contributions-widgets)|✅|✅|||||[🔗](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Contrigets.js&name=Contrigets&author=Neurogram&icon=icon_177.png&version=1.0.0)
+[Contrigets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#contrigets---github-contributions-widgets)|✅|✅||✅|✅|✅|[🔗](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Contrigets.js&name=Contrigets&author=Neurogram&icon=icon_177.png&version=1.0.0)
 [Dougets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#dougets---douban-movie-widgets)||✅|||||[🔗](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Dougets.js&name=Dougets&author=Neurogram&icon=icon_192.png&version=1.0.0)
 [Instagets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#instagets---instagram-widgets)|✅|✅|✅|✅|✅|✅|[🔗](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Instagets.js&name=Instagets&author=Neurogram&icon=icon_079.png&version=1.1.0)
 [Netgets](https://github.com/Neurogram-R/JSBox/blob/main/Widgets/README.md#netgets---netflix-widgets)||✅|||||[🔗](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Netgets.js&name=Netgets&author=Neurogram&icon=icon_114.png&version=1.0.0)
@@ -14,7 +14,7 @@ Widget|Small|Medium|Large|Circular|Rectangular|Inline|Install
 - Support theme color: green, blue
 - Tap to open user GitHub page
 
-![Contrigets](https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Material/Contrigets.png)
+![Contrigets](https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Material/Contrigets.jpg)
 
 
 ### [Dougets - Douban movie widgets](https://xteko.com/redir?url=https://raw.githubusercontent.com/Neurogram-R/JSBox/main/Widgets/Dougets.js&name=Dougets&author=Neurogram&icon=icon_192.png&version=1.0.0)
