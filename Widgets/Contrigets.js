@@ -2,8 +2,11 @@
 
 Contrigets by Neurogram
 
- - Fill GitHub username and theme color in Input Value of widget (separated by commas)
- - Support theme color: green, blue
+ - Fill items in Input Value of widget (separated by commas)
+   - username 
+   - username,green or username,blue (small widget & medium widget)
+   - username,today
+   - username,cube (rectangular widget)
  - Tap to open user GitHub page
 
 */
@@ -16,7 +19,7 @@ const theme_colors = {
 
 if (inputValue) {
     let username = inputValue.split(",")[0]
-    let theme = inputValue.split(",")[1] ? theme_colors[inputValue.split(",")[1]] : theme_colors.green
+    let theme = inputValue.split(",")[1] && theme_colors[inputValue.split(",")[1]] ? theme_colors[inputValue.split(",")[1]] : theme_colors.green
     let url = "https://github.com/" + username
     let resp = await $http.get(url)
 
@@ -35,15 +38,20 @@ if (inputValue) {
             let counter = contributions.join("\n").match(/data-count="\d+/g).join("\n")
             counter = counter.replace(/data-count="/g, "").split("\n")
 
-            contributions = family == 0 ? contributions.slice(-9).join("\n") : contributions.slice(-20).join("\n")
+            if (family != 1 && family != 6) contributions = contributions.slice(-9).join("\n")
+            if (family == 1) contributions = contributions.slice(-20).join("\n")
+            if (family == 6) contributions = contributions.slice(-15).join("\n")
+
             let colors_data = contributions.match(/data-level="\d+/g).join("\n")
             colors_data = colors_data.replace(/data-level="/g, "").split("\n")
 
-            let colors_row_spacing = family == 0 ? 2 : 2 // row spacing (small widget : medium widget)
-            let colors_column_spacing = family == 0 ? 4 : 5.05 // column spacing (small widget : medium widget)
+            let colors_row_spacing = family == 0 ? 2 : family == 6 ? 1 : 2 // row spacing (small : rectangular : medium)
+            let colors_column_spacing = family == 0 ? 4 : family == 6 ? 1 : 5.05 // column spacing (small : rectangular : medium)
 
             let colors_view = []
-            let colors_square_width = family == 0 ? (width - 30 - 8 * colors_row_spacing) / 9 : (width - 30 - 19 * colors_row_spacing) / 20
+            let colors_square_width = (width - 30 - 8 * colors_row_spacing) / 9 // family == 0
+            if (family == 1) colors_square_width = (width - 30 - 19 * colors_row_spacing) / 20
+            if (family == 6) colors_square_width = (height - 6) / 7
 
             for (var i = 0; i < colors_data.length; i++) {
                 colors_view.push({
@@ -60,18 +68,79 @@ if (inputValue) {
                 })
             }
 
-            let counter_view = {
+            let inline_widget = {
                 type: "text",
                 props: {
-                    text: `(${counter_sum(counter)} CONTRIBUTIONS)`,
-                    font: $font(10),
-                    color: $color("#9A9AA1"),
+                    text: family < 5 ? `(${counter_sum(counter)} CONTRIBUTIONS)` : inputValue.split(",")[1] == "today" ? colors_data[colors_data.length - 1] : `${counter_sum(counter)}`,
+                    font: family > 4 ? $font("bold", 20) : $font(10),
+                    color: family > 4 ? $color("white") : $color("#9A9AA1"),
                     minimumScaleFactor: 0.5,
                     lineLimit: 1
                 }
             }
 
-            return {
+            let rectangular_cube_widget = {
+                type: "hgrid",
+                props: {
+                    rows: Array(7).fill({
+                        flexible: {
+                            minimum: family == 6 ? 1 : 10,
+                            maximum: Infinity
+                        },
+                        spacing: colors_column_spacing
+                    }),
+                    spacing: colors_row_spacing
+                },
+                views: colors_view
+            }
+
+            let rectangular_avatar_widget = {
+                type: "hstack",
+                props: {
+                    alignment: $widget.verticalAlignment.center
+                },
+                views: [
+                    {
+                        type: "image",
+                        props: {
+                            uri: avatar,
+                            frame: {
+                                width: height - 8,
+                                height: height - 8
+                            },
+                            cornerRadius: {
+                                value: (height - 8) / 2,
+                                style: 0
+                            },
+                            resizable: true
+                        }
+                    },
+                    {
+                        type: "vstack",
+                        props: {
+                            alignment: $widget.horizontalAlignment.leading
+                        },
+                        views: [
+                            inline_widget,
+                            {
+                                type: "text",
+                                props: {
+                                    text: "Contributions",
+                                    font: $font(10),
+                                    color: $color("#9A9AA1"),
+                                    minimumScaleFactor: 0.5,
+                                    lineLimit: 1
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+
+            if (family == 6) return inputValue.split(",")[1] == "cube" ? rectangular_cube_widget : rectangular_avatar_widget
+            if (family == 5 || family == 7) return inline_widget
+
+            if (family < 2) return {
                 type: "vstack",
                 props: {
                     alignment: $widget.horizontalAlignment.leading,
@@ -115,23 +184,10 @@ if (inputValue) {
                                     lineLimit: 1
                                 }
                             },
-                            family == 0 ? null : counter_view
+                            family == 0 ? null : inline_widget
                         ]
                     },
-                    {
-                        type: "hgrid",
-                        props: {
-                            rows: Array(7).fill({
-                                flexible: {
-                                    minimum: 10,
-                                    maximum: Infinity
-                                },
-                                spacing: colors_column_spacing
-                            }),
-                            spacing: colors_row_spacing
-                        },
-                        views: colors_view
-                    }
+                    rectangular_cube_widget
                 ]
             }
         }
