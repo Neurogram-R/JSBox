@@ -51,6 +51,9 @@ const edit_tool = {
 }
 
 const edit_tool_amount = Object.keys(edit_tool).length
+let dialogue = $cache.get("dialogue")
+let multi_turn = false
+if (dialogue) multi_turn = dialogue.mode
 
 $app.theme = "auto"
 $ui.render({
@@ -133,6 +136,7 @@ $ui.render({
                     longPressed: function (info) {
                         multi_turn = multi_turn ? false : true
                         $ui.toast("Dialogue Mode " + (multi_turn ? "On" : "Off"))
+                        $cache.set("dialogue", { mode: multi_turn })
                     }
                 }
             }
@@ -198,7 +202,6 @@ async function edit(action, gesture) {
 }
 
 let generating = false
-let multi_turn = false
 
 async function gpt(role, gesture) {
 
