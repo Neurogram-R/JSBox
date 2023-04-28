@@ -57,13 +57,14 @@ $ui.render({
     props: {
         title: "ChatGPT",
         navBarHidden: $app.env == $env.keyboard,
-        pageSheet: $app.env == $env.keyboard
+        pageSheet: $app.env == $env.keyboard,
+        bgcolor: $color("#D0D3D9", "#2D2D2D"),
     },
     views: [{
         type: "matrix",
         props: {
             spacing: keyboard_spacing,
-            bgcolor: $color({ light: "#D0D3D9", dark: "#2D2D2D" }),
+            bgcolor: $color("clear"),
             data: dataPush(Object.keys(edit_tool).concat(Object.keys(role_data))),
             template: {
                 props: {},
@@ -72,8 +73,8 @@ $ui.render({
                     props: {
                         id: "button",
                         radius: 10,
-                        titleColor: $color({ light: "black", dark: "white" }),
-                        bgcolor: $color({ light: "#FFFFFF", dark: "#6B6B6B" }),
+                        titleColor: $color("black", "white"),
+                        bgcolor: $color("#FFFFFF", "#6B6B6B"),
                         align: $align.center
                     },
                     layout: $layout.fill,
@@ -163,11 +164,11 @@ function dataPush(data) {
 function handler(sender, gesture) {
     $keyboard.playInputClick()
     if ($app.env != $env.keyboard) return $ui.warning("Please Run In Keyboard")
-    if (sender.info.action) return edit(sender.info.action)
+    if (sender.info.action) return edit(sender.info.action, gesture)
     gpt(sender.title, gesture)
 }
 
-async function edit(action) {
+async function edit(action, gesture) {
 
     let before = $keyboard.textBeforeInput ? $keyboard.textBeforeInput.length : 0
     let after = $keyboard.textAfterInput ? $keyboard.textAfterInput.length : 0
@@ -178,7 +179,7 @@ async function edit(action) {
     if (action == "End") return $keyboard.moveCursor(after)
     if (action == "Return") return $keyboard.insert("\n")
     if (action == "Paste") return $keyboard.insert($clipboard.text || "")
-    if (action == "Dismiss") return $keyboard.dismiss()
+    if (action == "Dismiss") return gesture == "tap" ? $app.close() : $keyboard.dismiss()
 
     let content = await get_content(0)
     if (action != "Empty") $clipboard.text = content
