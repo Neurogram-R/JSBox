@@ -28,7 +28,7 @@ const chatgpt_role_columns = 3
 const keyboard_spacing = 5
 const keyboard_height = 40
 
-const role_data = {
+const role_data = { // "Role Name": ["System Content", "Prompts Template"]
     "🤖 Assistant": ["You are a helpful assistant.", ""],
     "📖 Explainer": ["", "Explain the following content:"],
     "🇨🇳 Translator": ["Translate content into Chinese.", ""],
