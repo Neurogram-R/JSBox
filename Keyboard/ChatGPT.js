@@ -2,6 +2,7 @@
 
 ChatGPT Keyboard by Neurogram
 
+ - Support editing tools
  - Support appending or overwriting prompts with generated result
  - Support custom roles.
  - Support prompts templates.
@@ -22,14 +23,34 @@ const user_gesture = { // Generated results: 0: auto-wrap 1: overwrite selected/
 }
 const usage_toast = true // Display usage toast
 
-const role_data = [ // ["Role Name", "System Content", "Prompts Template", Multi-round] 
-    ["🤖 Assistant", "You are a helpful assistant.", "", 1],
-    ["📖 Explainer", "", "Explain the following content:", 0],
-    ["🗂️ Summarizer", "", "Summarize the following content:", 0],
-    ["📑 Expander", "", "{USER_CONTENT}\n\nExpand the above content", 0],
-    ["🇨🇳 Translator", "Translate content into Chinese.", "", 0],
-    ["🇺🇸 Translator", "Translate content into English.", "", 0]
-]
+const edit_tool_columns = 5
+const chatgpt_role_columns = 3
+const keyboard_spacing = 5
+const keyboard_height = 40
+
+const role_data = {
+    "🤖 Assistant": ["You are a helpful assistant.", ""],
+    "📖 Explainer": ["", "Explain the following content:"],
+    "🇨🇳 Translator": ["Translate content into Chinese.", ""],
+    "🗂️ Summarizer": ["", "Summarize the following content:"],
+    "📑 Expander": ["", "{USER_CONTENT}\n\nExpand the above content"],
+    "🇺🇸 Translator": ["Translate content into English.", ""]
+}
+
+const edit_tool = {
+    "Start": "arrow.left.to.line",
+    "Left": "arrow.left",
+    "Right": "arrow.right",
+    "End": "arrow.right.to.line",
+    "Return": "return",
+    "Copy": "doc.on.doc",
+    "Paste": "doc.on.clipboard",
+    "Cut": "scissors",
+    "Empty": "trash",
+    "Dismiss": "keyboard.chevron.compact.down"
+}
+
+const edit_tool_amount = Object.keys(edit_tool).length
 
 $app.theme = "auto"
 $ui.render({
@@ -41,22 +62,29 @@ $ui.render({
     views: [{
         type: "matrix",
         props: {
-            columns: 2,
-            spacing: 5,
-            itemHeight: 40,
+            spacing: keyboard_spacing,
             bgcolor: $color({ light: "#D0D3D9", dark: "#2D2D2D" }),
-            data: dataPush(role_data),
+            data: dataPush(Object.keys(edit_tool).concat(Object.keys(role_data))),
             template: {
                 props: {},
                 views: [{
-                    type: "label",
+                    type: "button",
                     props: {
-                        id: "label",
+                        id: "button",
                         radius: 10,
+                        titleColor: $color({ light: "black", dark: "white" }),
                         bgcolor: $color({ light: "#FFFFFF", dark: "#6B6B6B" }),
                         align: $align.center
                     },
-                    layout: $layout.fill
+                    layout: $layout.fill,
+                    events: {
+                        tapped: function (sender, indexPath, data) {
+                            handler(sender, "tap")
+                        },
+                        longPressed: function (info, indexPath, data) {
+                            handler(info.sender, "long_press")
+                        }
+                    }
                 }]
             },
             footer: {
@@ -79,7 +107,7 @@ $ui.render({
                                 {
                                     type: "scroll",
                                     layout: function (make, view) {
-                                        make.edges.insets($insets(20, 10, 10, 10))
+                                        make.edges.insets($insets(10, 10, 10, 10))
                                     },
                                     views: [{
                                         type: "label",
@@ -100,43 +128,78 @@ $ui.render({
                                 }
                             ]
                         })
+                    },
+                    longPressed: function (info) {
+                        multi_turn = multi_turn ? false : true
+                        $ui.toast("Dialogue Mode " + (multi_turn ? "On" : "Off"))
                     }
                 }
             }
         },
-        layout: function (make, view) {
-            make.edges.insets($insets(0, 0, 0, 0))
-        },
+        layout: $layout.fill,
         events: {
-            didSelect: function (sender, indexPath, data) {
-                gpt(indexPath.row, "tap")
-            },
-            didLongPress: function (sender, indexPath, data) {
-                gpt(indexPath.row, "long_press")
+            itemSize: function (sender, indexPath) {
+                let keyboard_columns = indexPath.item < edit_tool_amount ? edit_tool_columns : chatgpt_role_columns
+                return $size(($device.info.screen.width - (keyboard_columns + 1) * keyboard_spacing) / keyboard_columns, keyboard_height);
             }
         }
     }]
 })
 
 function dataPush(data) {
-    let role_name = []
-    for (let i in data) {
-        role_name.push({
-            label: {
-                text: data[i][0]
+    let key_title = []
+    for (let i = 0; i < data.length; i++) {
+        key_title.push({
+            button: {
+                title: i < edit_tool_amount ? "" : data[i],
+                symbol: i < edit_tool_amount ? edit_tool[data[i]] : "",
+                info: { action: i < edit_tool_amount ? data[i] : "" }
             }
         })
     }
-    return role_name
+    return key_title
+}
+
+function handler(sender, gesture) {
+    $keyboard.playInputClick()
+    if ($app.env != $env.keyboard) return $ui.warning("Please Run In Keyboard")
+    if (sender.info.action) return edit(sender.info.action)
+    gpt(sender.title, gesture)
+}
+
+async function edit(action) {
+
+    let before = $keyboard.textBeforeInput ? $keyboard.textBeforeInput.length : 0
+    let after = $keyboard.textAfterInput ? $keyboard.textAfterInput.length : 0
+
+    if (action == "Start") return $keyboard.moveCursor(-before)
+    if (action == "Left") return $keyboard.moveCursor(-1)
+    if (action == "Right") return $keyboard.moveCursor(1)
+    if (action == "End") return $keyboard.moveCursor(after)
+    if (action == "Return") return $keyboard.insert("\n")
+    if (action == "Paste") return $keyboard.insert($clipboard.text || "")
+    if (action == "Dismiss") return $keyboard.dismiss()
+
+    let content = await get_content(0)
+    if (action != "Empty") $clipboard.text = content
+
+    if (action == "Copy") return $ui.success("Done")
+
+    if (action == "Cut" || "Empty") {
+        if (!$keyboard.selectedText) {
+            $keyboard.moveCursor(after)
+            delete_content(content.length)
+        }
+        if ($keyboard.selectedText) $keyboard.delete()
+        return
+    }
+
 }
 
 let generating = false
+let multi_turn = false
 
-async function gpt(index, gesture) {
-    $keyboard.playInputClick()
-    if ($app.env != $env.keyboard) return $ui.warning("Please Run In Keyboard")
-
-    let multi_turn = role_data[index][3]
+async function gpt(role, gesture) {
 
     if (generating) return $ui.warning("In Generating")
     let user_content = await get_content(0)
@@ -147,10 +210,12 @@ async function gpt(index, gesture) {
     let messages = []
 
     if (multi_turn) {
+
+        if ($keyboard.selectedText) $keyboard.moveCursor(1)
+
         if (!user_content.match(/⚙️ SYSTEM:[^🔚]+/)) {
             $ui.warning("No Dialogue Found")
-            $keyboard.moveCursor(1)
-            $keyboard.insert(`\n⚙️ SYSTEM:\n${role_data[index][1] || "-"}🔚\n\n👨‍💻 USER:\n`)
+            $keyboard.insert(`\n⚙️ SYSTEM:\n${role_data[role][0] || "-"}🔚\n\n👨‍💻 USER:\n`)
             generating = false
             return
         }
@@ -172,7 +237,6 @@ async function gpt(index, gesture) {
 
         let system_content = user_content.match(/⚙️ SYSTEM:\n([^🔚]+)/)[1]
         if (system_content != "-") messages = [{ "role": "system", "content": system_content }].concat(messages)
-        $keyboard.moveCursor(1)
     }
 
     if (!multi_turn) {
@@ -181,15 +245,11 @@ async function gpt(index, gesture) {
             $keyboard.insert("\n")
         }
 
-        if (user_gesture[gesture] && !$keyboard.selectedText) {
-            for (let i = 0; i < user_content.length; i++) {
-                $keyboard.delete()
-            }
-        }
+        if (user_gesture[gesture] && !$keyboard.selectedText) delete_content(user_content.length)
 
-        if (role_data[index][1]) messages.push({ "role": "system", "content": role_data[index][1] })
+        if (role_data[role][0]) messages.push({ "role": "system", "content": role_data[role][0] })
 
-        let preset_prompt = role_data[index][2]
+        let preset_prompt = role_data[role][1]
         if (preset_prompt && !preset_prompt.match(/{USER_CONTENT}/)) user_content = preset_prompt + "\n" + user_content
         if (preset_prompt && preset_prompt.match(/{USER_CONTENT}/)) user_content = preset_prompt.replace(/{USER_CONTENT}/g, user_content)
 
@@ -223,4 +283,10 @@ async function get_content(length) {
     let content = $keyboard.selectedText || await $keyboard.getAllText()
     if (length) content = `Length: ${content.replace(/(⚙️ SYSTEM|👨‍💻 USER|🤖 ASSISTANT):\n|🔚/g, "").replace(/\n+/g, "\n").length}\n${content}`
     return content
+}
+
+function delete_content(times) {
+    for (let i = 0; i < times; i++) {
+        $keyboard.delete()
+    }
 }
