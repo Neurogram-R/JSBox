@@ -285,7 +285,7 @@ async function gpt(role, gesture) {
 
 async function get_content(length) {
     let content = $keyboard.selectedText || await $keyboard.getAllText()
-    if (length) content = `Length: ${content.replace(/(⚙️ SYSTEM|👨‍💻 USER|🤖 ASSISTANT):\n|🔚/g, "").replace(/\n+/g, "\n").length}\n${content}`
+    if (length) content = `Length: ${content.replace(/(⚙️ SYSTEM|👨‍💻 USER|🤖 ASSISTANT):\n|🔚/g, "").replace(/\n+/g, "\n").length}\n\n${content}`
     return content
 }
 
