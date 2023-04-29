@@ -185,6 +185,7 @@ async function edit(action, gesture) {
     if (action == "Return") return $keyboard.insert("\n")
     if (action == "Paste") return $keyboard.insert($clipboard.text || "")
     if (action == "Dismiss") return gesture == "tap" ? $app.close() : $keyboard.dismiss()
+    if (action == "Empty" && gesture == "tap") return $keyboard.delete()
 
     let content = await get_content(0)
     if (action != "Empty") $clipboard.text = content
@@ -197,7 +198,6 @@ async function edit(action, gesture) {
             delete_content(content.length)
         }
         if ($keyboard.selectedText) $keyboard.delete()
-        return
     }
 
 }
