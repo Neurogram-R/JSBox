@@ -77,6 +77,7 @@ $ui.render({
                         id: "button",
                         radius: 10,
                         titleColor: $color("black", "white"),
+                        tintColor: $color("black", "white"),
                         bgcolor: $color("#FFFFFF", "#6B6B6B"),
                         align: $align.center
                     },
