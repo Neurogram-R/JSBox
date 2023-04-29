@@ -191,7 +191,7 @@ async function edit(action, gesture) {
 
     if (action == "Copy") return $ui.success("Done")
 
-    if (action == "Cut" || "Empty") {
+    if (action == "Cut" || action == "Empty") {
         if (!$keyboard.selectedText) {
             $keyboard.moveCursor(after)
             delete_content(content.length)
