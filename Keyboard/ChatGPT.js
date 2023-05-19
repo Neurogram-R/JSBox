@@ -104,7 +104,7 @@ $ui.render({
                 props: {
                     id: "footer",
                     height: 20,
-                    title: "ChatGPT Keyboard by Neurogram",
+                    title: " ChatGPT Keyboard by Neurogram",
                     titleColor: $color("#AAAAAA"),
                     bgcolor: $color("clear"),
                     symbol: multi_turn ? "bubble.left.and.bubble.right" : "bubble.left",
