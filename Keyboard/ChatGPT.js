@@ -23,10 +23,17 @@ const user_gesture = { // Generated results: 0: auto-wrap 1: overwrite selected/
 }
 const usage_toast = true // Display usage toast
 
+const keyboard_sound = true
+const keyboard_vibrate = -1 // -1: no vibration, 0~2: vibration level
 const edit_tool_columns = 5
 const chatgpt_role_columns = 3
 const keyboard_spacing = 5
 const keyboard_height = 40
+const keyboard_total_height = 0
+$keyboard.barHidden = false
+
+const heartbeat = 2 // -1: no heartbeat, 0~2: heartbeat level
+const heartbeat_interval = 1.2 // seconds
 
 const role_data = { // "Role Name": ["System Content", "Prompts Template"]
     "🤖 Assistant": ["You are a helpful assistant.", ""],
@@ -93,11 +100,15 @@ $ui.render({
                 }]
             },
             footer: {
-                type: "label",
+                type: "button",
                 props: {
+                    id: "footer",
                     height: 20,
-                    text: "ChatGPT Keyboard by Neurogram",
-                    textColor: $color("#AAAAAA"),
+                    title: "ChatGPT Keyboard by Neurogram",
+                    titleColor: $color("#AAAAAA"),
+                    bgcolor: $color("clear"),
+                    symbol: multi_turn ? "bubble.left.and.bubble.right" : "bubble.left",
+                    tintColor: $color("#AAAAAA"),
                     align: $align.center,
                     font: $font(10)
                 },
@@ -136,6 +147,7 @@ $ui.render({
                     },
                     longPressed: function (info) {
                         multi_turn = multi_turn ? false : true
+                        set_bubble()
                         $ui.toast("Dialogue Mode " + (multi_turn ? "On" : "Off"))
                         $cache.set("dialogue", { mode: multi_turn })
                     }
@@ -149,7 +161,15 @@ $ui.render({
                 return $size(($device.info.screen.width - (keyboard_columns + 1) * keyboard_spacing) / keyboard_columns, keyboard_height);
             }
         }
-    }]
+    }],
+    events: {
+        appeared: function () {
+            if (keyboard_total_height) $keyboard.height = keyboard_total_height
+        },
+        disappeared: function () {
+            $keyboard.barHidden = false
+        }
+    }
 })
 
 function dataPush(data) {
@@ -167,7 +187,8 @@ function dataPush(data) {
 }
 
 function handler(sender, gesture) {
-    $keyboard.playInputClick()
+    if (keyboard_sound) $keyboard.playInputClick()
+    if (keyboard_vibrate != -1) $device.taptic(keyboard_vibrate)
     if ($app.env != $env.keyboard) return $ui.warning("Please Run In Keyboard")
     if (sender.info.action) return edit(sender.info.action, gesture)
     gpt(sender.title, gesture)
@@ -203,6 +224,8 @@ async function edit(action, gesture) {
 }
 
 let generating = false
+let timer = ""
+let generating_icon = 0
 
 async function gpt(role, gesture) {
 
@@ -261,6 +284,34 @@ async function gpt(role, gesture) {
         messages.push({ "role": "user", "content": user_content })
     }
 
+    if (heartbeat != -1) {
+        timer = $timer.schedule({
+            interval: heartbeat_interval,
+            handler: async () => {
+                $device.taptic(heartbeat)
+                $("footer").symbol = "ellipsis.bubble.fill"
+                await $wait(0.2)
+                $device.taptic(heartbeat)
+                $("footer").symbol = "ellipsis.bubble"
+            }
+        })
+    }
+
+    if (heartbeat == -1) {
+        timer = $timer.schedule({
+            interval: heartbeat_interval / 2,
+            handler: async () => {
+                if (generating_icon) {
+                    generating_icon = 0
+                    $("footer").symbol = "ellipsis.bubble"
+                } else {
+                    generating_icon = 1
+                    $("footer").symbol = "ellipsis.bubble.fill"
+                }
+            }
+        })
+    }
+
     let openai = await $http.post({
         url: "https://api.openai.com/v1/chat/completions",
         header: {
@@ -273,7 +324,10 @@ async function gpt(role, gesture) {
         }
     })
 
+    timer.invalidate()
+    set_bubble()
     generating = false
+    generating_icon = 0
     if (openai.data.error) return $ui.error(openai.data.error.message)
 
     if (!multi_turn) $keyboard.insert(openai.data.choices[0].message.content)
@@ -294,4 +348,8 @@ function delete_content(times) {
     for (let i = 0; i < times; i++) {
         $keyboard.delete()
     }
+}
+
+function set_bubble() {
+    $("footer").symbol = multi_turn ? "bubble.left.and.bubble.right" : "bubble.left"
 }
