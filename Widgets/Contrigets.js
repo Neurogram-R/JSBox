@@ -33,16 +33,17 @@ if (inputValue) {
             const width = $widget.displaySize.width
             const height = $widget.displaySize.height
 
-            let contributions = resp.data.match(/<g transform="translate(.|\n)+?<\/g>/g)
+            let contributions_data = resp.data.match(/data-date="\d{4}-\d\d-\d\d".+data-level="\d+".+\n.+/g).join('\n')
+            let contributions = contributions_data.replace(/(data-date="[^"]+").+(data-level="[^"]+").+\n.+>(\d+|No) contributions* on.+/g, `$1 $2 data-count="$3"`).split('\n')
+            contributions.sort()
 
-            let counter = contributions.join("\n").match(/data-count="\d+/g).join("\n")
+            let day_left = 6 - new Date(contributions[contributions.length - 1].match(/data-date="(\d{4}-\d\d-\d\d)/)[1]).getDay();
+            contributions = contributions.slice(-((family == 1 ? 20 : family == 6 ? 15 : 9) * 7 - day_left))
+
+            let counter = contributions.join("\n").replace(/data-count="No/g, 'data-count="0').match(/data-count="\d+/g).join("\n")
             counter = counter.replace(/data-count="/g, "").split("\n")
 
-            if (family != 1 && family != 6) contributions = contributions.slice(-9).join("\n")
-            if (family == 1) contributions = contributions.slice(-20).join("\n")
-            if (family == 6) contributions = contributions.slice(-15).join("\n")
-
-            let colors_data = contributions.match(/data-level="\d+/g).join("\n")
+            let colors_data = contributions.join("\n").match(/data-level="\d+/g).join("\n")
             colors_data = colors_data.replace(/data-level="/g, "").split("\n")
 
             let colors_row_spacing = family == 0 ? 2 : family == 6 ? 1 : 2 // row spacing (small : rectangular : medium)
