@@ -9,14 +9,19 @@ ChatGPT Keyboard by Neurogram
  - Support multi round of dialogue
  - Support displaying length of prompts
  - Support displaying tokens usage reminder
+ - Support DeepL and Google translate
 
  Manual: https://neurogram.notion.site/ChatGPT-Keyboard-af8f7c74bc5c47989259393c953b8017
 
 */
 
-
 const api_key = "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" // Your API key
-const model = "gpt-3.5-turbo"
+const model = "gpt-4o"
+const openai_proxy_url = '' // Optional
+
+const deepl_api_key = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:fx'
+const deepl_api_url = '' // Optional
+
 const user_gesture = { // Generated results: 0: auto-wrap 1: overwrite selected/all prompts  
     tap: 1,
     long_press: 0
@@ -35,13 +40,42 @@ $keyboard.barHidden = false
 const heartbeat = 2 // -1: no heartbeat, 0~2: heartbeat level
 const heartbeat_interval = 1.2 // seconds
 
-const role_data = { // "Role Name": ["System Content", "Prompts Template"]
-    "🤖 Assistant": ["You are a helpful assistant.", ""],
-    "📖 Explainer": ["", "Explain the following content:"],
-    "🇨🇳 Translator": ["Translate content into Chinese.", ""],
-    "🗂️ Summarizer": ["", "Summarize the following content:"],
-    "📑 Expander": ["", "{USER_CONTENT}\n\nExpand the above content"],
-    "🇺🇸 Translator": ["Translate content into English.", ""]
+const role_data = {
+    "🤖 Assistant": {
+        'type': 'GPT',
+        'messages': [
+            { "role": "system", "content": 'You are a helpful assistant.' },
+            { "role": "user", "content": `{USER_CONTENT}` }
+        ]
+    },
+    "🗂️ Summarizer": {
+        'type': 'GPT',
+        'messages': [
+            { "role": "system", "content": '' },
+            { "role": "user", "content": `Please summarize the following content:{USER_CONTENT}` }
+        ]
+    },
+    "📑 Expander": {
+        'type': 'GPT',
+        'messages': [
+            { "role": "system", "content": '' },
+            { "role": "user", "content": `{USER_CONTENT}\n\nExpand the above content` }
+        ]
+    },
+    "🇺🇸 GPT": {
+        'type': 'GPT',
+        'messages': [
+            { "role": "user", "content": `Please translate content into English: {USER_CONTENT}` }
+        ]
+    },
+    "🇺🇸 DeepL": {
+        'type': 'DeepL',
+        'target_lang': 'EN'
+    },
+    "🇺🇸 Google": {
+        'type': 'Google',
+        'target_lang': 'en'
+    },
 }
 
 const edit_tool = {
@@ -238,6 +272,10 @@ async function gpt(role, gesture) {
     let messages = []
 
     if (multi_turn) {
+        if (role_data[role].type != 'GPT') {
+            generating = false
+            return $ui.warning("Multi-round Are NOT Supported")
+        }
 
         if ($keyboard.selectedText) $keyboard.moveCursor(1)
 
@@ -275,13 +313,15 @@ async function gpt(role, gesture) {
 
         if (user_gesture[gesture] && !$keyboard.selectedText) delete_content(user_content.length)
 
-        if (role_data[role][0]) messages.push({ "role": "system", "content": role_data[role][0] })
+        if (role_data[role].type == 'GPT') {
 
-        let preset_prompt = role_data[role][1]
-        if (preset_prompt && !preset_prompt.match(/{USER_CONTENT}/)) user_content = preset_prompt + "\n" + user_content
-        if (preset_prompt && preset_prompt.match(/{USER_CONTENT}/)) user_content = preset_prompt.replace(/{USER_CONTENT}/g, user_content)
+            let preset_prompt = role_data[role].messages
 
-        messages.push({ "role": "user", "content": user_content })
+            for (let i in preset_prompt) {
+                messages.push({ "role": preset_prompt[i].role, "content": preset_prompt[i].content.replace(/{USER_CONTENT}/g, user_content) })
+            }
+        }
+
     }
 
     if (heartbeat != -1) {
@@ -312,30 +352,79 @@ async function gpt(role, gesture) {
         })
     }
 
-    let openai = await $http.post({
-        url: "https://api.openai.com/v1/chat/completions",
-        header: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${api_key}`
-        },
-        body: {
-            "model": model,
-            "messages": messages
+    if (role_data[role].type == 'GPT') {
+        let openai = await $http.post({
+            url: openai_proxy_url || "https://api.openai.com/v1/chat/completions",
+            header: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${api_key}`
+            },
+            body: {
+                "model": model,
+                "messages": messages
+            }
+        })
+        timer.invalidate()
+        set_bubble()
+        generating = false
+        generating_icon = 0
+        if (openai.data.error) return $ui.error(openai.data.error.message)
+
+        if (!multi_turn) $keyboard.insert(openai.data.choices[0].message.content)
+        if (multi_turn) $keyboard.insert(`🔚\n\n🤖 ASSISTANT:\n${openai.data.choices[0].message.content}🔚\n\n👨‍💻 USER:\n`)
+
+        if (!usage_toast) return
+        let usage = openai.data.usage
+        $ui.toast(`Usage: P${usage.prompt_tokens} + C${usage.completion_tokens} = T${usage.total_tokens}`)
+    }
+
+    if (role_data[role].type == 'DeepL') {
+        let deepl = await $http.post({
+            url: deepl_api_url || "https://api-free.deepl.com/v2/translate",
+            header: {
+                "Content-Type": "application/json",
+                "Authorization": `DeepL-Auth-Key ${deepl_api_key}`
+            },
+            body: {
+                "text": [user_content],
+                "target_lang": role_data[role].target_lang
+            }
+        })
+        timer.invalidate()
+        set_bubble()
+        generating = false
+        generating_icon = 0
+        if (typeof deepl.data == 'strint') return $ui.error("DeepL Error: " + deepl.data)
+        if (typeof deepl.data == 'object' && !deepl.data.translations) return $ui.error("DeepL Error: " + deepl.data.message)
+        let translations = []
+
+        for (let t in deepl.data.translations) {
+            translations.push(deepl.data.translations[t].text)
         }
-    })
 
-    timer.invalidate()
-    set_bubble()
-    generating = false
-    generating_icon = 0
-    if (openai.data.error) return $ui.error(openai.data.error.message)
+        $keyboard.insert(translations.join('\n'))
+    }
 
-    if (!multi_turn) $keyboard.insert(openai.data.choices[0].message.content)
-    if (multi_turn) $keyboard.insert(`🔚\n\n🤖 ASSISTANT:\n${openai.data.choices[0].message.content}🔚\n\n👨‍💻 USER:\n`)
+    if (role_data[role].type == 'Google') {
+        let google = await $http.get({
+            url: `https://translate.google.com/translate_a/single?client=it&dt=qca&dt=t&dt=rmt&dt=bd&dt=rms&dt=sos&dt=md&dt=gt&dt=ld&dt=ss&dt=ex&otf=2&dj=1&hl=en&ie=UTF-8&oe=UTF-8&sl=auto&tl=${role_data[role].target_lang}&q=${encodeURIComponent(user_content)}`,
+            header: {
+                "User-Agent": "GoogleTranslate/6.29.59279 (iPhone; iOS 15.4; en; iPhone14,2)"
+            }
+        })
+        timer.invalidate()
+        set_bubble()
+        generating = false
+        generating_icon = 0
+        if (!google.data.sentences) return $ui.error("Google Error: " + JSON.stringify(google.data))
+        let translations = []
 
-    if (!usage_toast) return
-    let usage = openai.data.usage
-    $ui.toast(`Usage: P${usage.prompt_tokens} + C${usage.completion_tokens} = T${usage.total_tokens}`)
+        for (let s in google.data.sentences) {
+            if (google.data.sentences[s].trans) translations.push(google.data.sentences[s].trans)
+        }
+
+        $keyboard.insert(translations.join('\n'))
+    }
 }
 
 async function get_content(length) {
