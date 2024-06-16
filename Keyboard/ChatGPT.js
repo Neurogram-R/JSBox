@@ -394,7 +394,7 @@ async function gpt(role, gesture) {
         set_bubble()
         generating = false
         generating_icon = 0
-        if (typeof deepl.data == 'strint') return $ui.error("DeepL Error: " + deepl.data)
+        if (typeof deepl.data == 'string') return $ui.error("DeepL Error: " + deepl.data)
         if (typeof deepl.data == 'object' && !deepl.data.translations) return $ui.error("DeepL Error: " + deepl.data.message)
         let translations = []
 
