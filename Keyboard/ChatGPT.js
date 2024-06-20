@@ -280,8 +280,8 @@ async function gpt(role, gesture, is_shorcut) {
 
     let shortcut_length = 0
     if (is_shorcut) {
-        let shortcut_key = get_shortcut_key()
-        let patt = new RegExp(`(${shortcut_key.join("|")})$`)
+        let shortcut_data = get_shortcut_data()
+        let patt = new RegExp(`(${shortcut_data.keys.join("|")})$`)
         shortcut_length = user_content.match(patt)[1].length
         user_content = user_content.replace(patt, "")
     }
@@ -467,17 +467,24 @@ function set_bubble() {
 $delay(0.3, async () => {
     if (shortcut) {
         let user_content = await get_content(0)
-        let shortcut_key = get_shortcut_key()
-        let patt = new RegExp(`(${shortcut_key.join("|")})$`)
-        let role = user_content.match(patt)
-        if (role && shortcut[role[1]]) handler({ "title": shortcut[role[1]], "info": {} }, shortcut_action, true)
+        let shortcut_data = get_shortcut_data()
+        let patt = new RegExp(`(${shortcut_data.keys.join("|")})$`)
+        let shortcut_match = user_content.match(patt)
+        if (shortcut_match && shortcut_data.role[shortcut_match[1]]) handler({ "title": shortcut_data.role[shortcut_match[1]], "info": {} }, shortcut_action, true)
     }
 })
 
-function get_shortcut_key() {
+function get_shortcut_data() {
     let shortcut_key = []
+    let role = {}
     for (let i in role_data) {
-        if (role_data[i].shortcut) shortcut_key.push(role_data[i].shortcut)
+        if (role_data[i].shortcut) {
+            shortcut_key.push(role_data[i].shortcut)
+            role[role_data[i].shortcut] = i
+        }
     }
-    return shortcut_key
+    return {
+        keys: shortcut_key,
+        role: role
+    }
 }
