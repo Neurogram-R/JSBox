@@ -10,6 +10,7 @@ ChatGPT Keyboard by Neurogram
  - Support displaying length of prompts
  - Support displaying tokens usage reminder
  - Support DeepL and Google translate
+ - Support shortcut key to run
 
  Manual: https://neurogram.notion.site/ChatGPT-Keyboard-af8f7c74bc5c47989259393c953b8017
 
@@ -17,16 +18,20 @@ ChatGPT Keyboard by Neurogram
 
 const api_key = "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" // Your API key
 const model = "gpt-4o"
-const openai_proxy_url = '' // Optional
+const openai_proxy_url = "" // Optional
 
-const deepl_api_key = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:fx'
-const deepl_api_url = '' // Optional
+const deepl_api_key = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:fx"
+const deepl_api_url = "" // Optional
 
 const user_gesture = { // Generated results: 0: auto-wrap 1: overwrite selected/all prompts  
     tap: 1,
     long_press: 0
 }
 const usage_toast = true // Display usage toast
+
+const shortcut = true // false: off, true: on
+const shortcut_action = "tap" // tap, long_press
+const auto_switch_kbd = true // false: off, true: on
 
 const keyboard_sound = true
 const keyboard_vibrate = -1 // -1: no vibration, 0~2: vibration level
@@ -42,39 +47,45 @@ const heartbeat_interval = 1.2 // seconds
 
 const role_data = {
     "🤖 Assistant": {
-        'type': 'GPT',
-        'messages': [
-            { "role": "system", "content": 'You are a helpful assistant.' },
+        "type": "GPT",
+        "messages": [
+            { "role": "system", "content": "You are a helpful assistant." },
             { "role": "user", "content": `{USER_CONTENT}` }
-        ]
+        ],
+        "shortcut": "="
     },
     "🗂️ Summarizer": {
-        'type': 'GPT',
-        'messages': [
-            { "role": "system", "content": '' },
+        "type": "GPT",
+        "messages": [
+            { "role": "system", "content": "" },
             { "role": "user", "content": `Please summarize the following content:{USER_CONTENT}` }
-        ]
+        ],
+        "shortcut": ""
     },
     "📑 Expander": {
-        'type': 'GPT',
-        'messages': [
-            { "role": "system", "content": '' },
+        "type": "GPT",
+        "messages": [
+            { "role": "system", "content": "" },
             { "role": "user", "content": `{USER_CONTENT}\n\nExpand the above content` }
-        ]
+        ],
+        "shortcut": ""
     },
     "🇺🇸 GPT": {
-        'type': 'GPT',
-        'messages': [
+        "type": "GPT",
+        "messages": [
             { "role": "user", "content": `Please translate content into English: {USER_CONTENT}` }
-        ]
+        ],
+        "shortcut": ""
     },
     "🇺🇸 DeepL": {
-        'type': 'DeepL',
-        'target_lang': 'EN'
+        "type": "DeepL",
+        "target_lang": "EN",
+        "shortcut": ""
     },
     "🇺🇸 Google": {
-        'type': 'Google',
-        'target_lang': 'en'
+        "type": "Google",
+        "target_lang": "en",
+        "shortcut": ""
     },
 }
 
@@ -220,12 +231,12 @@ function dataPush(data) {
     return key_title
 }
 
-function handler(sender, gesture) {
+function handler(sender, gesture, is_shorcut) {
     if (keyboard_sound) $keyboard.playInputClick()
     if (keyboard_vibrate != -1) $device.taptic(keyboard_vibrate)
     if ($app.env != $env.keyboard) return $ui.warning("Please Run In Keyboard")
     if (sender.info.action) return edit(sender.info.action, gesture)
-    gpt(sender.title, gesture)
+    gpt(sender.title, gesture, is_shorcut)
 }
 
 async function edit(action, gesture) {
@@ -261,18 +272,26 @@ let generating = false
 let timer = ""
 let generating_icon = 0
 
-async function gpt(role, gesture) {
+async function gpt(role, gesture, is_shorcut) {
 
     if (generating) return $ui.warning("In Generating")
     let user_content = await get_content(0)
     if (!user_content && !multi_turn) return $ui.warning("No Prompts Found")
+
+    let shortcut_length = 0
+    if (is_shorcut) {
+        let shortcut_key = get_shortcut_key()
+        let patt = new RegExp(`(${shortcut_key.join("|")})$`)
+        shortcut_length = user_content.match(patt)[1].length
+        user_content = user_content.replace(patt, "")
+    }
 
     generating = true
 
     let messages = []
 
     if (multi_turn) {
-        if (role_data[role].type != 'GPT') {
+        if (role_data[role].type != "GPT") {
             generating = false
             return $ui.warning("Multi-round Are NOT Supported")
         }
@@ -311,9 +330,9 @@ async function gpt(role, gesture) {
             $keyboard.insert("\n")
         }
 
-        if (user_gesture[gesture] && !$keyboard.selectedText) delete_content(user_content.length)
+        if (user_gesture[gesture] && !$keyboard.selectedText) delete_content(user_content.length + shortcut_length)
 
-        if (role_data[role].type == 'GPT') {
+        if (role_data[role].type == "GPT") {
 
             let preset_prompt = role_data[role].messages
 
@@ -352,7 +371,7 @@ async function gpt(role, gesture) {
         })
     }
 
-    if (role_data[role].type == 'GPT') {
+    if (role_data[role].type == "GPT") {
         let openai = await $http.post({
             url: openai_proxy_url || "https://api.openai.com/v1/chat/completions",
             header: {
@@ -378,7 +397,7 @@ async function gpt(role, gesture) {
         $ui.toast(`Usage: P${usage.prompt_tokens} + C${usage.completion_tokens} = T${usage.total_tokens}`)
     }
 
-    if (role_data[role].type == 'DeepL') {
+    if (role_data[role].type == "DeepL") {
         let deepl = await $http.post({
             url: deepl_api_url || "https://api-free.deepl.com/v2/translate",
             header: {
@@ -394,18 +413,18 @@ async function gpt(role, gesture) {
         set_bubble()
         generating = false
         generating_icon = 0
-        if (typeof deepl.data == 'string') return $ui.error("DeepL Error: " + deepl.data)
-        if (typeof deepl.data == 'object' && !deepl.data.translations) return $ui.error("DeepL Error: " + deepl.data.message)
+        if (typeof deepl.data == "string") return $ui.error("DeepL Error: " + deepl.data)
+        if (typeof deepl.data == "object" && !deepl.data.translations) return $ui.error("DeepL Error: " + deepl.data.message)
         let translations = []
 
         for (let t in deepl.data.translations) {
             translations.push(deepl.data.translations[t].text)
         }
 
-        $keyboard.insert(translations.join('\n'))
+        $keyboard.insert(translations.join("\n"))
     }
 
-    if (role_data[role].type == 'Google') {
+    if (role_data[role].type == "Google") {
         let google = await $http.get({
             url: `https://translate.google.com/translate_a/single?client=it&dt=qca&dt=t&dt=rmt&dt=bd&dt=rms&dt=sos&dt=md&dt=gt&dt=ld&dt=ss&dt=ex&otf=2&dj=1&hl=en&ie=UTF-8&oe=UTF-8&sl=auto&tl=${role_data[role].target_lang}&q=${encodeURIComponent(user_content)}`,
             header: {
@@ -423,8 +442,10 @@ async function gpt(role, gesture) {
             if (google.data.sentences[s].trans) translations.push(google.data.sentences[s].trans)
         }
 
-        $keyboard.insert(translations.join('\n'))
+        $keyboard.insert(translations.join("\n"))
     }
+
+    if (is_shorcut && auto_switch_kbd) $keyboard.next()
 }
 
 async function get_content(length) {
@@ -441,4 +462,22 @@ function delete_content(times) {
 
 function set_bubble() {
     $("footer").symbol = multi_turn ? "bubble.left.and.bubble.right" : "bubble.left"
+}
+
+$delay(0.3, async () => {
+    if (shortcut) {
+        let user_content = await get_content(0)
+        let shortcut_key = get_shortcut_key()
+        let patt = new RegExp(`(${shortcut_key.join("|")})$`)
+        let role = user_content.match(patt)
+        if (role && shortcut[role[1]]) handler({ "title": shortcut[role[1]], "info": {} }, shortcut_action, true)
+    }
+})
+
+function get_shortcut_key() {
+    let shortcut_key = []
+    for (let i in role_data) {
+        if (role_data[i].shortcut) shortcut_key.push(role_data[i].shortcut)
+    }
+    return shortcut_key
 }
