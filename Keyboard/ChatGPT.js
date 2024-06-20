@@ -468,9 +468,11 @@ $delay(0.3, async () => {
     if (shortcut) {
         let user_content = await get_content(0)
         let shortcut_data = get_shortcut_data()
-        let patt = new RegExp(`(${shortcut_data.keys.join("|")})$`)
-        let shortcut_match = user_content.match(patt)
-        if (shortcut_match && shortcut_data.role[shortcut_match[1]]) handler({ "title": shortcut_data.role[shortcut_match[1]], "info": {} }, shortcut_action, true)
+        if (shortcut_data.keys.length > 0) {
+            let patt = new RegExp(`(${shortcut_data.keys.join("|")})$`)
+            let shortcut_match = user_content.match(patt)
+            if (shortcut_match && shortcut_data.role[shortcut_match[1]]) handler({ "title": shortcut_data.role[shortcut_match[1]], "info": {} }, shortcut_action, true)
+        }
     }
 })
 
